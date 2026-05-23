@@ -37,6 +37,8 @@ FIREBASE_URL = "https://test2-mdr-default-rtdb.europe-west1.firebasedatabase.app
 class CaisseDB:
     def __init__(self, db_url=FIREBASE_URL):
         self.db_url = db_url.rstrip('/') + '/'
+        import ssl
+        self.ssl_context = ssl._create_unverified_context()
         # Tester la connexion et initialiser
         try:
             self.seed_data()
@@ -60,7 +62,7 @@ class CaisseDB:
             encoded_data = json.dumps(data).encode('utf-8')
             
         try:
-            with urllib.request.urlopen(req, data=encoded_data, timeout=5) as response:
+            with urllib.request.urlopen(req, data=encoded_data, timeout=5, context=self.ssl_context) as response:
                 res_content = response.read().decode('utf-8')
                 if not res_content or res_content == "null":
                     return None
