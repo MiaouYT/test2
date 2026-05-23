@@ -1,0 +1,40 @@
+import SwiftUI
+
+struct Theme {
+    static let bgMain = Color(hex: "#121214")
+    static let bgCard = Color(hex: "#1c1c21")
+    static let bgInput = Color(hex: "#282830")
+    static let fgText = Color(hex: "#f1f1f4")
+    static let fgMuted = Color(hex: "#8c8c9a")
+    static let accent = Color(hex: "#00adb5")
+    static let accentHover = Color(hex: "#00c2cb")
+    static let green = Color(hex: "#2ecc71")
+    static let red = Color(hex: "#e74c3c")
+    static let amber = Color(hex: "#f39c12")
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 1)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
